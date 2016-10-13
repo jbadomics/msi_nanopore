@@ -2,10 +2,48 @@
 
 This page contains step-by-step instructions for setting up Python and installing custom modules on MSI. Specifically, these instructions explain how to configure an MSI user's environment to run [poretools](http://poretools.readthedocs.io/en/latest/) to analyze Oxford Nanopore MinION sequencing data.
 
-Steps 4-8 have been automated as a bash script `install_poretools.sh` in this repo. Once you have launched an interactive session:
+## The easy way
 
-    cd && git clone https://github.com/jbadomics/msi_nanopore.git
+1.  Log in to MSI via SSH (requires VPN if off campus):
+
+        ssh username@login.msi.umn.edu
+
+2.  SSH to your node of choice:
+
+        ssh lab		# OR
+        ssh mesabi
+
+3.  Launch an interactive session with desired resources and duration, i.e. change `-l` parameters as desired:
+
+        qsub -I -q lab -l nodes=1:ppn=16,mem=8gb,walltime=2:00:00 -d $PWD  # on lab nodes
+        qsub -I -q small -l nodes=1:ppn=24,mem=16gb,walltime=2:00:00 -d $PWD  # on mesabi
+
+4.  Load pre-configured Python, which comes bundled with any dependencies required by poretools (NumPy, matplotlib, etc.):
+
+        module load python-epd/1.5.2
+
+5.  Install poretools:
+
+        git clone https://github.com/arq5x/poretools
+        cd poretools
+        python setup.py --user
+        export PATH=$PATH:~/.local/bin
+
+6.  Check that poretools is working properly:
+
+        poretools -h
+
+## The slightly more complicated way
+
+This procedure will install poretools' Python dependencies separately rather than bundling with the Enthought Python Distribution as described above.
+
+NOTE: Steps 4-8 have been automated as a bash script `install_poretools.sh` in this repo. Once you have launched an interactive session:
+
+    git clone https://github.com/jbadomics/msi_nanopore.git
+    cd msi_nanopore/
     source ~/install_poretools.sh
+
+Step by step instructions:
 
 1.  Log in to MSI via SSH (requires VPN if off campus):
 
